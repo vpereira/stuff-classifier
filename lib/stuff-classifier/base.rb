@@ -34,7 +34,6 @@ class StuffClassifier::Base
     # word weight evaluation
     @weight = opts[:weight] || 1.0
     @assumed_prob = opts[:assumed_prob] || 0.1
-    @max_prob = opts[:max_prob].to_f || 0.0
     # storage
     purge_state = opts[:purge_state]
     @storage = opts[:storage] || StuffClassifier::Base.storage

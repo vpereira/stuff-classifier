@@ -13,7 +13,6 @@ class StuffClassifier::Bayes < StuffClassifier::Base
   def initialize(name, opts={})
     super(name, opts)
     #max_prob for classify
-    @max_prob = opts[:max_prob].to_f || 0.0
     @thresholds = {}
   end
 
@@ -68,7 +67,7 @@ class StuffClassifier::Bayes < StuffClassifier::Base
     #  return default if prob * threshold > max_prob
     #end
     #
-    max_prob * threshold > @max_prob ? best : default
+    max_prob * threshold > @min_prob ? best : default
     #best 
   end
 
