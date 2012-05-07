@@ -37,38 +37,15 @@ class StuffClassifier::Bayes < StuffClassifier::Base
   end
 
   def classify(text, default=nil)
-    # Find the category with the highest probability
-    max_prob = @min_prob
+    # Find the category with the highest probability otherwise return default
+    max_prob = 0.0
     best = nil
-
     scores = cat_scores(text)
     best, max_prob = scores.max_by { |k,v| v }
-    #puts "#{best} -> #{max_prob}"
-    #return default unless best
-    
-    # Return the default category in case the threshold condition was
-    # not met. For example, if the threshold for :spam is 1.2
-    #
-    #    :spam => 0.73, :ham => 0.40  (OK)
-    #    :spam => 0.80, :ham => 0.70  (Fail, :ham is too close)
-
-    #return default unless best
-
     threshold = @thresholds[best] || 1.0
-
-    #return default if max_prob < @max_prob or best.nil?
-
-    #we should refactor it. Two times the same loop?
-    #scores.each do |cat,prob|
-    #  next if cat == best
-    #  return default if prob * threshold > max_prob
-    #end
-    #scores.reject { |cat, prob| cat == best }.each do |cat,prob|
-    #  return default if prob * threshold > max_prob
-    #end
-    #
-    max_prob * threshold > @min_prob ? best : default
-    #best 
+    #puts "#{max_prob.to_f} > #{@min_prob.to_f} = #{max_prob.to_f > @min_prob.to_f}"
+    #max_prob.to_f > @min_prob.to_f ? best : default
+    @min_prob.to_f * threshold > max_prob.to_f ? default : best
   end
 
   def word_classification_detail(word)
@@ -78,18 +55,16 @@ class StuffClassifier::Bayes < StuffClassifier::Base
     ap result
 
     p "word_weighted_average"
-    result=categories.inject({}) do |h,cat| h[cat]=word_weighted_average(word,cat);h end  
+    result=categories.inject({}) do |h,cat| h[cat]=word_weighted_average(word,cat);h end
     ap result
 
     p "doc_prob"
-    result=categories.inject({}) do |h,cat| h[cat]=doc_prob(word,cat);h end  
+    result=categories.inject({}) do |h,cat| h[cat]=doc_prob(word,cat);h end
     ap result
 
     p "text_prob"
-    result=categories.inject({}) do |h,cat| h[cat]=text_prob(word,cat);h end  
+    result=categories.inject({}) do |h,cat| h[cat]=text_prob(word,cat);h end
     ap result
-    
-    
   end
 
 end
